@@ -1,0 +1,66 @@
+; Registers (4 general purpose)
+REGS DWORD 4 DUP(0)
+
+; Pipeline buffers to hold instruction and operands at each stage
+; For simplicity, we track instructions by opcode and operands
+FetchBuffer     STRUCT
+    opcode BYTE ?
+    rd BYTE ?
+    rs1 BYTE ?
+    rs2 BYTE ?
+    immediate DWORD ?
+ENDS
+
+; Similar buffers for DecodeBuffer, ExecuteBuffer, etc.
+; This is a simplified approach for demonstration.START:
+    MOV cycles, 0
+
+PIPELINE_LOOP:
+    INC cycles
+
+    ; Write Back Stage
+    CALL WriteBack
+
+    ; Memory Access Stage
+    CALL MemoryAccess
+
+    ; Fetch Operands Stage
+    CALL FetchOperands
+
+    ; Calculate Operands Stage
+    CALL CalculateOperands
+
+    ; Execute Stage
+    CALL Execute
+
+    ; Decode Stage
+    CALL Decode
+
+    ; Fetch Stage
+    CALL Fetch
+
+    ; Advance instructions to next stage buffers here...
+
+    ; Display current cycle number
+    CALL DisplayCycle
+
+    ; Check for pipeline completion condition
+    ; Loop back to PIPELINE_LOOP
+
+    JMP PIPELINE_LOOP
+; Check if current instruction depends on results of previous instructions still in pipeline
+
+HazardCheck PROC
+    ; Example: If instruction in Execute stage writes to a register
+    ; that instruction in Decode stage needs, stall the pipeline.
+
+    ; If hazard detected, insert stall (NOP) or hold stages
+
+    RET
+HazardCheck ENDP
+Fetch PROC
+    ; Load instruction from instruction memory (array or code segment)
+    ; into FetchBuffer
+
+    RET
+Fetch ENDP
